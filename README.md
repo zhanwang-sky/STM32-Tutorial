@@ -20,12 +20,6 @@ HAL_Init()
   __weak HAL_MspInit()
 ```
 
-注意：配置其他功能前，先开启SYSCFG和PWR的时钟。
-```
-__HAL_RCC_SYSCFG_CLK_ENABLE()
-__HAL_RCC_PWR_CLK_ENABLE()
-```
-
 2. 配置内部稳压器。注意：稳压值关乎CPU能达到的最高频率，必须正确配置。
 ```
 // PWR_REGULATOR_VOLTAGE_SCALE1_BOOST: 1.28V, up to 170 MHz
@@ -50,6 +44,9 @@ HAL_RCC_ClockConfig(_, FLASH_LATENCY_4)
 ```
 HAL_MspInit()
   // HAL_NVIC_SetPriorityGrouping()
+  __HAL_RCC_SYSCFG_CLK_ENABLE()      // 先开启外设时钟才能进行配置
+  __HAL_RCC_PWR_CLK_ENABLE()         // 先开启外设时钟才能进行配置
+  HAL_PWREx_DisableUCPDDeadBattery() // 禁用UCPD弱下拉
 ```
 
 6. 重写`HAL_InitTick()`函数
